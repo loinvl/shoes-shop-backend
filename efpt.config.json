@@ -1,0 +1,81 @@
+﻿{
+   "CodeGenerationMode": 3,
+   "ContextClassName": "TheShoesShopDbContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Model",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "TheShoesShop_BackEnd",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "brand",
+         "ObjectType": 0
+      },
+      {
+         "Name": "cartdetail",
+         "ObjectType": 0
+      },
+      {
+         "Name": "customer",
+         "ObjectType": 0
+      },
+      {
+         "Name": "orderdetail",
+         "ObjectType": 0
+      },
+      {
+         "Name": "purchaseorder",
+         "ObjectType": 0
+      },
+      {
+         "Name": "rate",
+         "ObjectType": 0
+      },
+      {
+         "Name": "shoes",
+         "ObjectType": 0
+      },
+      {
+         "Name": "shoesmodel",
+         "ObjectType": 0
+      },
+      {
+         "Name": "shoesmodelimage",
+         "ObjectType": 0
+      },
+      {
+         "Name": "store",
+         "ObjectType": 0
+      },
+      {
+         "Name": "storeadmin",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "theshoesshop",
+   "UncountableWords": null,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDateOnlyTimeOnly": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false,
+   "UseT4": false
+}
