@@ -1,4 +1,4 @@
-﻿namespace TheShoesShop_BackEnd.Model
+﻿namespace TheShoesShop_BackEnd.Models
 {
     public class HelloWorld
     {

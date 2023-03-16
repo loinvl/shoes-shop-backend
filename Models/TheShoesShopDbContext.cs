@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace TheShoesShop_BackEnd.Model;
+namespace TheShoesShop_BackEnd.Models;
 
 public partial class TheShoesShopDbContext : DbContext
 {

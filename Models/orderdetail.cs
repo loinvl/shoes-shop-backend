@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TheShoesShop_BackEnd.Model;
+namespace TheShoesShop_BackEnd.Models;
 
 public partial class orderdetail
 {
