@@ -48,7 +48,7 @@ namespace TheShoesShop_BackEnd.Controllers
         }
 
         //Test authentication
-        [HttpGet("customer/info")]
+        [HttpGet("api/customer/info")]
         [Authorize]
         public IActionResult GetCustomer()
         {

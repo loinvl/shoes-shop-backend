@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TheShoesShop_BackEnd.Auth;
 using TheShoesShop_BackEnd.Models;
 using TheShoesShop_BackEnd.Services;
+using BC = BCrypt.Net.BCrypt;
 
 namespace TheShoesShop_BackEnd.Controllers
 {
@@ -24,10 +25,10 @@ namespace TheShoesShop_BackEnd.Controllers
         {
             try
             {
-                var customer = _TheShoesShopServices._CustomerService.GetCustomerByEmail(LoginForm.Email);
+                var Customer = _TheShoesShopServices._CustomerService.GetCustomerByEmail(LoginForm.Email);
                 
                 //Not found out customer
-                if (customer == null)
+                if (Customer == null)
                 {
                     return BadRequest(new Response
                     {
@@ -37,7 +38,7 @@ namespace TheShoesShop_BackEnd.Controllers
                 }
 
                 //Found out a customer but invalid password
-                if (LoginForm.Password != customer.HashPassword)
+                if (!BC.Verify(LoginForm.Password, Customer.HashPassword))
                 {
                     return BadRequest(new Response
                     {
@@ -47,7 +48,7 @@ namespace TheShoesShop_BackEnd.Controllers
                 }
 
                 //valid
-                var User = new User { CustomerID = customer.CustomerID, Email = customer.Email };
+                var User = new User { CustomerID = Customer.CustomerID, Email = Customer.Email };
                 var Token = _JWTService.GenerateAccessToken(User);
 
                 return Ok(new Response
