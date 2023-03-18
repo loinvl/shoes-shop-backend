@@ -9,7 +9,7 @@ public partial class shoesmodelimage
 {
     public int ImageID { get; set; }
 
-    public int? ShoesModelID { get; set; }
+    public int ShoesModelID { get; set; }
 
     public string ImageLink { get; set; }
 

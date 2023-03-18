@@ -1,4 +1,4 @@
-﻿namespace TheShoesShop_BackEnd.Models
+﻿namespace TheShoesShop_BackEnd.DTOs
 {
     public class Response
     {

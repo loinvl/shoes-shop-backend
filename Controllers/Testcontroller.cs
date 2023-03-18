@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TheShoesShop_BackEnd.DTOs;
 using TheShoesShop_BackEnd.Models;
 using TheShoesShop_BackEnd.Services;
 
@@ -19,9 +20,9 @@ namespace TheShoesShop_BackEnd.Controllers
 
         //Test starting app
         [HttpGet]
-        public IEnumerable<HelloWorld> GetHelloWorld()
+        public IEnumerable<HelloWorldDTO> GetHelloWorld()
         {
-            return Enumerable.Range(1, Languages.Length).Select(index => new HelloWorld
+            return Enumerable.Range(1, Languages.Length).Select(index => new HelloWorldDTO
             {
                 ID = index,
                 Language = Languages[index - 1],

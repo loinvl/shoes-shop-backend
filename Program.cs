@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using TheShoesShop_BackEnd.Auth;
 using TheShoesShop_BackEnd.Models;
 using TheShoesShop_BackEnd.Services;
+using TheShoesShop_BackEnd.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,9 +46,16 @@ builder.Services.AddSingleton<JWTService>();
 builder.Services.AddScoped<TheShoesShopServices>();
 builder.Services.AddScoped<CustomerService>();
 
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+//Add automapper config
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

@@ -11,7 +11,7 @@ public partial class shoesmodel
 
     public string ShoesModelName { get; set; }
 
-    public int? BrandID { get; set; }
+    public int BrandID { get; set; }
 
     public string ShoesModelDescription { get; set; }
 

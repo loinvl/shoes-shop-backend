@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TheShoesShop_BackEnd.Models;
 
 namespace TheShoesShop_BackEnd.Services
@@ -6,7 +7,6 @@ namespace TheShoesShop_BackEnd.Services
     public class CustomerService
     {
         private readonly TheShoesShopDbContext _context;
-
         public CustomerService(TheShoesShopDbContext context) 
         {
             _context = context;
@@ -14,20 +14,28 @@ namespace TheShoesShop_BackEnd.Services
 
         public List<customer> GetAllCustomer()
         {
-            var customers = _context.customer.ToList();
-            return customers;
+            var CustomerList = _context.customer.ToList();
+            return CustomerList;
         }
 
         public customer? GetCustomerById(int ID)
         {
-            var customer = _context.customer.SingleOrDefault(customer => customer.CustomerID == ID);
-            return customer;
+            var Customer = _context.customer.SingleOrDefault(customer => customer.CustomerID == ID);
+            return Customer;
         }
 
         public customer? GetCustomerByEmail(string? Email)
         {
-            var customer = _context.customer.SingleOrDefault(customer => customer.Email.Equals(Email));
-            return customer;
+            var Customer = _context.customer.SingleOrDefault(customer => customer.Email.Equals(Email));
+            return Customer;
+        }
+
+        public customer RegisterCustomer(customer Customer)
+        {
+            var NewCustomer = _context.customer.Add(Customer).Entity;
+            _context.SaveChanges();
+
+            return NewCustomer;
         }
     }
 }
