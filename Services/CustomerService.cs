@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TheShoesShop_BackEnd.Models;
+using BC = BCrypt.Net.BCrypt;
 
 namespace TheShoesShop_BackEnd.Services
 {
@@ -36,6 +37,18 @@ namespace TheShoesShop_BackEnd.Services
             _context.SaveChanges();
 
             return NewCustomer;
+        }
+
+        public async Task<bool> ResetPassword(int CustomerID, string NewPassword)
+        {
+            var NewHashPassword = BC.HashPassword(NewPassword);
+            var Customer = await _context.customer.SingleOrDefaultAsync(ctm => ctm.CustomerID == CustomerID);
+            
+            if (Customer == null) { return false; }
+
+            Customer.HashPassword = NewHashPassword;
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

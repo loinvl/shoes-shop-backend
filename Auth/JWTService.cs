@@ -30,13 +30,12 @@ namespace TheShoesShop_BackEnd.Auth
             return Claims;
         }
 
-        public string GenerateAccessToken(object Obj)
+        public string GenerateAccessToken(object Obj, int ExpToken)
         {
             var Issuer = _config["JWT:Issuer"];
             var Audience = _config["JWT:Audience"];
             var SecretKey = _config["JWT:SecretKey"];
             var SecretKeyBytes = Encoding.UTF8.GetBytes(SecretKey!);
-            var TokenValidityInMinutes = int.Parse(_config["JWT:TokenValidityInMinutes"]!);
 
             var TokenHandler = new JwtSecurityTokenHandler();
 
@@ -47,39 +46,49 @@ namespace TheShoesShop_BackEnd.Auth
                 Issuer = Issuer,
                 SigningCredentials = new SigningCredentials
                 (new SymmetricSecurityKey(SecretKeyBytes), SecurityAlgorithms.HmacSha256Signature),
-                Expires = DateTime.UtcNow.AddMinutes(TokenValidityInMinutes)
+                Expires = DateTime.UtcNow.AddMinutes(ExpToken)
             };
             var Token = TokenHandler.CreateToken(TokenDescriptor);
             
             return TokenHandler.WriteToken(Token);
         }
 
-        public ClaimsPrincipal ValidateToken(string Token)
+        public ClaimsPrincipal? ValidateToken(string? Token)
         {
-            var SecretKey = _config["JWT:SecretKey"];
-            var ValidIssuer = _config["JWT:Issuer"];
-            var ValidAudience = _config["JWT:Audience"];
-
-            var TokenHandler = new JwtSecurityTokenHandler();
-            var SecretKeyBytes = Encoding.UTF8.GetBytes(SecretKey!);
-            var ValidationParameters = new TokenValidationParameters
+            try
             {
-                ValidateIssuer = true,
-                ValidIssuer = ValidIssuer,
+                // When valid token
+                var SecretKey = _config["JWT:SecretKey"];
+                var ValidIssuer = _config["JWT:Issuer"];
+                var ValidAudience = _config["JWT:Audience"];
 
-                ValidateAudience = true,
-                ValidAudience = ValidAudience,
-                
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(SecretKeyBytes),
-                
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
-            };
-            SecurityToken ValidatedToken;
-            var Principal = TokenHandler.ValidateToken(Token, ValidationParameters, out ValidatedToken);
-            
-            return Principal;
+                var TokenHandler = new JwtSecurityTokenHandler();
+                var SecretKeyBytes = Encoding.UTF8.GetBytes(SecretKey!);
+                var ValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = ValidIssuer,
+
+                    ValidateAudience = true,
+                    ValidAudience = ValidAudience,
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(SecretKeyBytes),
+
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+                SecurityToken ValidatedToken;
+                var Principal = TokenHandler.ValidateToken(Token, ValidationParameters, out ValidatedToken);
+
+                return Principal;
+            }
+            catch(Exception ex)
+            {
+                // When invalid token
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
         }
     }
 }
