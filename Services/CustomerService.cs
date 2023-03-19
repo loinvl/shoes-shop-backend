@@ -39,7 +39,7 @@ namespace TheShoesShop_BackEnd.Services
             return NewCustomer;
         }
 
-        public async Task<bool> ResetPassword(int CustomerID, string NewPassword)
+        public async Task<bool> ResetPassword(int CustomerID, string? NewPassword)
         {
             var NewHashPassword = BC.HashPassword(NewPassword);
             var Customer = await _context.customer.SingleOrDefaultAsync(ctm => ctm.CustomerID == CustomerID);

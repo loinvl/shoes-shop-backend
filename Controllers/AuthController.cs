@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -66,14 +67,16 @@ namespace TheShoesShop_BackEnd.Controllers
 
                 //valid
                 var User = new User { CustomerID = Customer.CustomerID, Email = Customer.Email };
-                var ExpToken = int.Parse(_config["JWT:TokenValidityInMinutes"]!);
-                var Token = _JWTService.GenerateAccessToken(User, ExpToken);
+                var ExpAccessToken = int.Parse(_config["JWT:AccessTokenValidityInMinutes"]!);
+                var ExpRefreshToken = int.Parse(_config["JWT:RefreshTokenValidityInMinutes"]!);
+                var AccessToken = _JWTService.GenerateToken(User, ExpAccessToken);
+                var RefreshToken = _JWTService.GenerateToken(User, ExpRefreshToken);
 
                 return Ok(new Response
                 {
                     Success = true,
                     Message = "Login successfully",
-                    Data = new { Token }
+                    Data = new { AccessToken, RefreshToken }
                 });
             }
             catch(Exception ex)
@@ -164,7 +167,7 @@ namespace TheShoesShop_BackEnd.Controllers
                 // Customer exist, setup data that use send to user
                 // Generate token that to user reset password
                 var ExpToken = 5;
-                var Token = _JWTService.GenerateAccessToken
+                var Token = _JWTService.GenerateToken
                     (new User { CustomerID = Customer.CustomerID, Email = Customer.Email }, ExpToken);
                 var FrontendHost = _config["Frontend:Host"];
                 var ToEmail = Customer.Email;
@@ -247,6 +250,53 @@ namespace TheShoesShop_BackEnd.Controllers
                 {
                     Success = false,
                     Message = "Error server, try to again, never give up"
+                });
+            }
+        }
+
+        // Refresh access token with refresh token
+        [HttpPost("token/refresh")]
+        public IActionResult RefreshAccessToken([FromBody] Dictionary<string, string> Data)
+        {
+            try
+            {
+                // Get refresh tokent from data post
+                Data.TryGetValue("refreshToken", out var RefreshToken);
+
+                //Verify refresh token
+                var Claims = _JWTService.ValidateToken(RefreshToken);
+
+                // Verifing is fail cause token has expired or invalid
+                if (Claims == null)
+                {
+                    return Unauthorized(new Response
+                    {
+                        Success = false,
+                        Message = "Refresh token has expired or invalid, please login",
+                    });
+                }
+
+                // Generate new refresh token and new access token
+                var User = new User(Claims);
+                var ExpAccessToken = int.Parse(_config["JWT:AccessTokenValidityInMinutes"]!);
+                var ExpRefreshToken = int.Parse(_config["JWT:RefreshTokenValidityInMinutes"]!);
+                var NewAccessToken = _JWTService.GenerateToken(User, ExpAccessToken);
+                var NewRefreshToken = _JWTService.GenerateToken(User, ExpRefreshToken);
+
+                return Ok(new Response
+                {
+                    Success = true,
+                    Message = "Generate successfully",
+                    Data = new { NewAccessToken, NewRefreshToken }
+                });
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, new Response
+                {
+                    Success = false,
+                    Message = "Error some thing, try to again, never give up"
                 });
             }
         }

@@ -30,7 +30,7 @@ namespace TheShoesShop_BackEnd.Auth
             return Claims;
         }
 
-        public string GenerateAccessToken(object Obj, int ExpToken)
+        public string GenerateToken(object Obj, int ExpToken)
         {
             var Issuer = _config["JWT:Issuer"];
             var Audience = _config["JWT:Audience"];
