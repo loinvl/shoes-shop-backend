@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TheShoesShop_BackEnd.Model;
+namespace TheShoesShop_BackEnd.Models;
 
 public partial class shoesmodel
 {
@@ -11,7 +11,7 @@ public partial class shoesmodel
 
     public string ShoesModelName { get; set; }
 
-    public int? BrandID { get; set; }
+    public int BrandID { get; set; }
 
     public string ShoesModelDescription { get; set; }
 

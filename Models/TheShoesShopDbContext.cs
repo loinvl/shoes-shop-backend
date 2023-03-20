@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace TheShoesShop_BackEnd.Model;
+namespace TheShoesShop_BackEnd.Models;
 
 public partial class TheShoesShopDbContext : DbContext
 {
@@ -77,6 +77,7 @@ public partial class TheShoesShopDbContext : DbContext
             entity.Property(e => e.AccountStatus).HasDefaultValueSql("'0'");
             entity.Property(e => e.Address).HasColumnType("text");
             entity.Property(e => e.CustomerName)
+                .IsRequired()
                 .HasMaxLength(50)
                 .UseCollation("utf8_general_ci");
             entity.Property(e => e.Email)
@@ -191,6 +192,7 @@ public partial class TheShoesShopDbContext : DbContext
 
             entity.HasOne(d => d.Brand).WithMany(p => p.shoesmodel)
                 .HasForeignKey(d => d.BrandID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ShoesModel_FkBrandID");
         });
 
@@ -201,11 +203,13 @@ public partial class TheShoesShopDbContext : DbContext
             entity.HasIndex(e => e.ShoesModelID, "ShoesModelImage_FkShoesModelID");
 
             entity.Property(e => e.ImageLink)
+                .IsRequired()
                 .HasMaxLength(200)
                 .IsFixedLength();
 
             entity.HasOne(d => d.ShoesModel).WithMany(p => p.shoesmodelimage)
                 .HasForeignKey(d => d.ShoesModelID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ShoesModelImage_FkShoesModelID");
         });
 
@@ -213,12 +217,18 @@ public partial class TheShoesShopDbContext : DbContext
         {
             entity.HasKey(e => e.StoreID).HasName("PRIMARY");
 
-            entity.Property(e => e.Address).HasColumnType("text");
-            entity.Property(e => e.Email).HasMaxLength(100);
+            entity.Property(e => e.Address)
+                .IsRequired()
+                .HasColumnType("text");
+            entity.Property(e => e.Email)
+                .IsRequired()
+                .HasMaxLength(100);
             entity.Property(e => e.Phone)
+                .IsRequired()
                 .HasMaxLength(10)
                 .IsFixedLength();
             entity.Property(e => e.StoreName)
+                .IsRequired()
                 .HasMaxLength(50)
                 .UseCollation("utf8_general_ci");
         });

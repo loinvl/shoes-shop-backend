@@ -3,13 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace TheShoesShop_BackEnd.Model;
+namespace TheShoesShop_BackEnd.Models;
 
 public partial class shoesmodelimage
 {
     public int ImageID { get; set; }
 
-    public int? ShoesModelID { get; set; }
+    public int ShoesModelID { get; set; }
 
     public string ImageLink { get; set; }
 

@@ -1,26 +1,29 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TheShoesShop_BackEnd.Model;
+using TheShoesShop_BackEnd.DTOs;
+using TheShoesShop_BackEnd.Models;
+using TheShoesShop_BackEnd.Services;
 
 namespace TheShoesShop_BackEnd.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class Testcontroller : ControllerBase
+    public class TestController : ControllerBase
     {
         private static string[] Languages = new string[] { "C#", "Java", "Js", "C++", "Php" };
+        private readonly TheShoesShopServices _TheShoesShopServices;
 
-        private readonly TheShoesShopDbContext _context;
-
-        public Testcontroller(TheShoesShopDbContext context)
+        public TestController(TheShoesShopServices TheShoesShopServices)
         {
-            _context = context;
+            _TheShoesShopServices = TheShoesShopServices;
         }
 
         //Test starting app
         [HttpGet]
-        public IEnumerable<HelloWorld> GetHelloWorld()
+        public IEnumerable<HelloWorldDTO> GetHelloWorld()
         {
-            return Enumerable.Range(1, Languages.Length).Select(index => new HelloWorld
+            return Enumerable.Range(1, Languages.Length).Select(index => new HelloWorldDTO
             {
                 ID = index,
                 Language = Languages[index - 1],
@@ -35,7 +38,7 @@ namespace TheShoesShop_BackEnd.Controllers
         {
             try
             {
-                var customer = _context.customer.ToList();
+                var customer = _TheShoesShopServices._CustomerService.GetAllCustomer();
 
                 return Ok(customer);
             }
@@ -43,6 +46,43 @@ namespace TheShoesShop_BackEnd.Controllers
             {
                 Console.WriteLine(ex.ToString());
                 return StatusCode(500, ex);
+            }
+        }
+
+        //Test authentication
+        [HttpGet("api/customer/info")]
+        [Authorize]
+        public IActionResult GetCustomer()
+        {
+            try
+            {
+                var User = new TheShoesShop_BackEnd.Auth.User(HttpContext.User);
+                var Customer = _TheShoesShopServices._CustomerService.GetCustomerById(User.CustomerID);  
+                
+                if(Customer == null)
+                {
+                    return NotFound(new Response
+                    {
+                        Success = false,
+                        Message = "Dont exist customer with that ID"
+                    });
+                }
+
+                return Ok(new Response
+                {
+                    Success = true,
+                    Message = "Get customer successfully",
+                    Data = new { Customer },
+                });
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return BadRequest(new Response
+                {
+                    Success = false,
+                    Message = "Error something, please try to again"
+                });
             }
         }
     }
