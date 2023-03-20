@@ -1,7 +1,10 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Ocsp;
+using StackExchange.Redis;
 using TheShoesShop_BackEnd.Auth;
 using TheShoesShop_BackEnd.Models;
 using TheShoesShop_BackEnd.Services;
@@ -13,8 +16,18 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration["ConnectionStrings:MySqlConnection"];
 builder.Services.AddDbContext<TheShoesShopDbContext>(options => options.UseMySQL(connectionString));
 
+// Configure Redis connection
+var connectionStringRedis = builder.Configuration["ConnectionStrings:Redis"];
+var redisOptions = ConfigurationOptions.Parse(connectionStringRedis);
+var redis = ConnectionMultiplexer.Connect(redisOptions);
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
+builder.Services.AddTransient<RedisTokenBlacklist>();
+
+//
 builder.Services.AddControllers();
 
+// Add services to config authentication with jwt bearer
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -22,6 +35,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
+    // Validate token
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -37,6 +51,22 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
     };
+
+    // Check blacklist
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            var Blacklist = context.HttpContext.RequestServices.GetRequiredService<RedisTokenBlacklist>();
+            var BearerToken = context.Request.Headers["Authorization"].ToString();
+            var Token = BearerToken.Substring(BearerToken.IndexOf(" ") + 1);
+
+            if (await Blacklist.IsBlacklistedAsync(Token))
+            {
+                context.Fail("Token has been revoked");
+            }
+        }
+    };
 });
 
 builder.Services.AddAuthorization();
@@ -47,7 +77,6 @@ builder.Services.AddScoped<TheShoesShopServices>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<SendingEmail>();
 
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -55,8 +84,6 @@ builder.Services.AddSwaggerGen();
 
 //Add automapper config
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

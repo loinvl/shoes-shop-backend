@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -21,13 +22,15 @@ namespace TheShoesShop_BackEnd.Controllers
         private readonly JWTService _JWTService;
         private readonly IMapper _mapper;
         private readonly SendingEmail _SendingEmail;
+        private readonly RedisTokenBlacklist _Redis;
 
         public AuthController(
             IConfiguration config, 
             TheShoesShopServices TheShoesShopServices, 
             JWTService JWTService, 
             IMapper mapper,
-            SendingEmail SendingEmail
+            SendingEmail SendingEmail,
+            RedisTokenBlacklist Redis
         )
         {
             _config = config;
@@ -35,6 +38,7 @@ namespace TheShoesShop_BackEnd.Controllers
             _JWTService = JWTService;
             _mapper = mapper;
             _SendingEmail = SendingEmail;
+            _Redis = Redis;
         }
 
         //login
@@ -283,6 +287,7 @@ namespace TheShoesShop_BackEnd.Controllers
                 var NewAccessToken = _JWTService.GenerateToken(User, ExpAccessToken);
                 var NewRefreshToken = _JWTService.GenerateToken(User, ExpRefreshToken);
 
+                Response.Cookies.Append("fsfs", "sfs");
                 return Ok(new Response
                 {
                     Success = true,
@@ -299,6 +304,26 @@ namespace TheShoesShop_BackEnd.Controllers
                     Message = "Error some thing, try to again, never give up"
                 });
             }
+        }
+
+        // Logout by to token to blacklist token
+        [HttpGet("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            // Get tokent from 
+            var BearerToken = Request.Headers["Authorization"].ToString();
+            var Token = BearerToken.Substring(BearerToken.IndexOf(" ") + 1);
+            var ExpTimeToken = TimeSpan.FromTicks(int.Parse(HttpContext.User.FindFirstValue("exp")));
+
+            // Let token into blacklist
+            await _Redis.AddToBlacklistAsync(Token, ExpTimeToken);
+
+            return Ok(new Response
+            {
+                Success = true,
+                Message = "Logout successfully, token is revoked"
+            });
         }
         
     }
