@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Asn1.Ocsp;
 using StackExchange.Redis;
@@ -75,6 +76,9 @@ builder.Services.AddAuthorization();
 builder.Services.AddSingleton<JWTService>();
 builder.Services.AddScoped<TheShoesShopServices>();
 builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<ShoesModelService>();
+builder.Services.AddScoped<ShoesService>();
+builder.Services.AddScoped<CartDetailService>();
 builder.Services.AddScoped<SendingEmail>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -95,6 +99,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+//Use public folder
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Public")),
+    RequestPath = ""
+});
 
 app.UseAuthentication();
 
