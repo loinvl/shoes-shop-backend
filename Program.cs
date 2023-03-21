@@ -77,6 +77,8 @@ builder.Services.AddSingleton<JWTService>();
 builder.Services.AddScoped<TheShoesShopServices>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ShoesModelService>();
+builder.Services.AddScoped<ShoesService>();
+builder.Services.AddScoped<CartDetailService>();
 builder.Services.AddScoped<SendingEmail>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

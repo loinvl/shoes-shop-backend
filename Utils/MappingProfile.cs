@@ -9,7 +9,9 @@ namespace TheShoesShop_BackEnd.Utils
         public MappingProfile()
         {
             CreateMap<customer, CustomerDTO>();
-            //CreateMap<List<customer>, List<CustomerDTO>>();
+            CreateMap<shoes, ShoesDTO>();
+            CreateMap<cartdetail, CartDetailDTO>();
+            CreateMap<CartDetailDTO, cartdetail>();
         }
     }
 }
