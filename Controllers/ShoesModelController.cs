@@ -17,12 +17,42 @@ namespace TheShoesShop_BackEnd.Controllers
             _TheShoesShopServices = TheShoesShopServices;
         }
 
-        //[HttpGet("/all")]
-        //public async Task<IActionResult> GetShoesList(int PageIndex, int ItemPerPage)
-        //{
-        //    // 
-        //    var ShoesList = TheShoesShop_BackEnd.
-        //}
+        // Get shoes model list by: page, item per page, search, size, color, from, to, brand from instance shoes
+        [HttpGet("list")]
+        public async Task<IActionResult> GetShoesModelList(
+            int PageIndex, int ItemPerPage,
+            string? Search,
+            int? Size, string? Color,
+            int? From, int? To,
+            string? Brand,
+            int? SortType
+        )
+        {
+            try
+            {
+                // Find list with property
+                var ShoesModelList = await _TheShoesShopServices._ShoesModelService
+                    .GetShoesModelList(PageIndex, ItemPerPage, Search, Size, Color, From, To, Brand, SortType);
+
+                // Return result
+                return Ok(new Response
+                {
+                    Success = true,
+                    Message = "Request successfully",
+                    Data = new { ShoesModelList }
+                });
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, new Response
+                {
+                    Success = false,
+                    Message = "Error something, try to again, never give up"
+                });
+            }
+
+        }
 
         // Get one shoes model by id
         [HttpGet("{ShoesModelID}")]

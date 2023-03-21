@@ -5,8 +5,9 @@
         public readonly CustomerService _CustomerService;
         public readonly ShoesModelService _ShoesModelService;
 
-        public TheShoesShopServices(ShoesModelService ShoesModelService)
+        public TheShoesShopServices(CustomerService CustomerService, ShoesModelService ShoesModelService)
         {
+            _CustomerService = CustomerService;
             _ShoesModelService = ShoesModelService;
         }
     }
