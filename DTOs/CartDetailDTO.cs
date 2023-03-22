@@ -6,7 +6,6 @@ namespace TheShoesShop_BackEnd.DTOs
     {
         public int? CustomerID { get; set; }
         public int? ShoesID { get; set; }
-
         public int? Quantity { get; set; }
     }
 }

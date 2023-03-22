@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using TheShoesShop_BackEnd.DTOs;
 using TheShoesShop_BackEnd.Models;
 using BC = BCrypt.Net.BCrypt;
 
@@ -8,9 +9,12 @@ namespace TheShoesShop_BackEnd.Services
     public class CustomerService
     {
         private readonly TheShoesShopDbContext _context;
-        public CustomerService(TheShoesShopDbContext context) 
+        private readonly IMapper _mapper;
+
+        public CustomerService(TheShoesShopDbContext context, IMapper mapper) 
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public List<customer> GetAllCustomer()
@@ -49,6 +53,32 @@ namespace TheShoesShop_BackEnd.Services
             Customer.HashPassword = NewHashPassword;
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<CustomerDTO> GetProfileByID(int? CustomerID)
+        {
+            var CustomerEntity = await _context.customer.SingleOrDefaultAsync(c => c.CustomerID == CustomerID);
+            var Profile = _mapper.Map<CustomerDTO>(CustomerEntity);
+
+            return Profile;
+        }
+
+        public async Task<CustomerDTO> UpdateProfileByID(CustomerDTO Profile)
+        {
+            var CustomerEntity = await _context.customer.SingleOrDefaultAsync(c => c.CustomerID == Profile.CustomerID);
+            
+            // Update if exist
+            if(CustomerEntity != null)
+            {
+                CustomerEntity.CustomerName = Profile.CustomerName;
+                CustomerEntity.Address = Profile.Address;
+                CustomerEntity.Phone = Profile.Phone;
+                await _context.SaveChangesAsync();
+            }
+
+            var NewProfile = _mapper.Map<CustomerDTO>(CustomerEntity);
+
+            return NewProfile;
         }
     }
 }
