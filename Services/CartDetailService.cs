@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using TheShoesShop_BackEnd.DTOs;
 using TheShoesShop_BackEnd.Models;
 
@@ -14,6 +15,48 @@ namespace TheShoesShop_BackEnd.Services
         {
             _context = context;
             _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<CartDetailOfCustomerDTO>> GetCartDetailListOfCustomer(int CustomerID)
+        {
+            var CartDetailList = await (from cd in _context.cartdetail
+                                        where cd.CustomerID == CustomerID
+                                        join s in _context.shoes on cd.ShoesID equals s.ShoesID
+                                        join sm in _context.shoesmodel on s.ShoesModelID equals sm.ShoesModelID
+                                        select new CartDetailOfCustomerDTO
+                                        {
+                                            ShoesModel = new ShoesModelDTO
+                                            {
+                                                ShoesModelID = sm.ShoesModelID,
+                                                ShoesModelName = sm.ShoesModelName,
+                                                ShoesModelStatus = sm.ShoesModelStatus,
+                                                Brand = (from b in _context.brand
+                                                         where b.BrandID == sm.BrandID
+                                                         select new BrandDTO { 
+                                                             BrandID = b.BrandID, 
+                                                             BrandName = b.BrandName
+                                                         }).FirstOrDefault(),
+                                                Images = (from i in _context.shoesmodelimage
+                                                          where i.ShoesModelID == sm.ShoesModelID
+                                                          select new ShoesModelImageDTO
+                                                          {
+                                                              ImageID = i.ShoesModelID,
+                                                              ImageLink = i.ImageLink
+                                                          }).ToList(),
+                                            },
+                                            Shoes = new ShoesDTO
+                                            {
+                                                ShoesID = s.ShoesID,
+                                                Color = s.Color,
+                                                Quantity = s.Quantity,
+                                                ShoesStatus = s.ShoesStatus,
+                                                Size = s.Size,
+                                                UnitPrice = s.UnitPrice
+                                            },
+                                            Quantity = cd.Quantity
+                                        }).ToListAsync();
+
+            return CartDetailList;
         }
 
         public async Task<CartDetailDTO> AddShoes(CartDetailDTO CartDetail)

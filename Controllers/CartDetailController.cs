@@ -18,6 +18,38 @@ namespace TheShoesShop_BackEnd.Controllers
             _TheShoesShopServices = TheShoesShopServices;
         }
 
+        // Get cart detail list of customer
+        [HttpGet("list")]
+        [Authorize]
+        public async Task<IActionResult> GetCartDetailListOfCustomer()
+        {
+            try
+            {
+
+                // Get user
+                var User = new User(HttpContext.User);
+
+                // Get cart detail list of customer by customer id
+                var CartDetailList = await _TheShoesShopServices._CartDetailService.GetCartDetailListOfCustomer(User.CustomerID);
+
+                return Ok(new Response
+                {
+                    Success = true,
+                    Message = "Get shoes in cart successfully",
+                    Data = new { CartDetailList }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, new Response
+                {
+                    Success = true,
+                    Message = "Error, try again"
+                });
+            }
+        }
+
         // Add shoes into cart
         [HttpPost("add")]
         [Authorize]
