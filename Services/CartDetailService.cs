@@ -43,6 +43,7 @@ namespace TheShoesShop_BackEnd.Services
 
         public async Task<bool> RemoveShoes(CartDetailDTO CartDetail)
         {
+            // Check shoes id in cart detail
             var CartDetailEntity = await _context.cartdetail
                 .SingleOrDefaultAsync(cd => cd.CustomerID == CartDetail.CustomerID && cd.ShoesID == CartDetail.ShoesID);
             if (CartDetailEntity == null)
@@ -50,9 +51,31 @@ namespace TheShoesShop_BackEnd.Services
                 return false;
             }
 
+            // Remove if it exist
             _context.cartdetail.Remove(CartDetailEntity);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<CartDetailDTO?> UpdateShoesAmount(CartDetailDTO CartDetail)
+        {
+            // Check one cart detail in cart detail
+            var CartDetailEntity = await _context.cartdetail
+                .SingleOrDefaultAsync(cd => cd.CustomerID == CartDetail.CustomerID && cd.ShoesID == CartDetail.ShoesID);
+
+            // Not exist
+            if (CartDetailEntity == null)
+            {
+                return null;
+            }
+
+            // Exist, update shoes amount
+            CartDetailEntity.Quantity = CartDetail.Quantity ?? 1;
+            await _context.SaveChangesAsync();
+
+            // Return
+            var NewCartDetail = _mapper.Map<CartDetailDTO>(CartDetailEntity);
+            return NewCartDetail;
         }
     }
 }

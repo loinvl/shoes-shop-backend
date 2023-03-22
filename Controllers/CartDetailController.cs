@@ -18,7 +18,7 @@ namespace TheShoesShop_BackEnd.Controllers
             _TheShoesShopServices = TheShoesShopServices;
         }
 
-        // Add shoes instance into cart detail
+        // Add shoes into cart
         [HttpPost("add")]
         [Authorize]
         public async Task<IActionResult> AddShoes(CartDetailDTO CartDetail)
@@ -61,7 +61,7 @@ namespace TheShoesShop_BackEnd.Controllers
             }
         }
 
-        // Delete shoes instance from cart detail
+        // Delete shoes from cart
         [HttpDelete("remove/{ShoesID}")]
         [Authorize]
         public async Task<IActionResult> RemoveShoes(int ShoesID)
@@ -97,6 +97,55 @@ namespace TheShoesShop_BackEnd.Controllers
                         Success = true,
                         Message = "Remove shoes to cart successfully"
                     });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, new Response
+                {
+                    Success = true,
+                    Message = "Error, try again"
+                });
+            }
+        }
+
+        // Update shoes quantity to cart
+        [HttpPatch("update/quantity")]
+        [Authorize]
+        public async Task<IActionResult> UpdateShoesAmount(CartDetailDTO CartDetail)
+        {
+            try
+            {
+                // Check shoes in database
+                var Shoes = await _TheShoesShopServices._ShoesService.GetShoesByID(CartDetail.ShoesID);
+                if (Shoes == null)
+                {
+                    return BadRequest(new Response
+                    {
+                        Success = false,
+                        Message = "Shoes is not exist"
+                    });
+                }
+
+                // Update shoes quanity to cart
+                var User = new User(HttpContext.User);
+                CartDetail.CustomerID = User.CustomerID;
+                var NewCartDetail = await _TheShoesShopServices._CartDetailService.UpdateShoesAmount(CartDetail);
+                if (NewCartDetail == null)
+                {
+                    return BadRequest(new Response
+                    {
+                        Success = true,
+                        Message = "ShoesID of User is not exist"
+                    });
+                }
+
+                return Ok(new Response
+                {
+                    Success = true,
+                    Message = "Update shoes amount successfully",
+                    Data = new { NewCartDetail }
+                });
             }
             catch (Exception ex)
             {
