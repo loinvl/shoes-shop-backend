@@ -40,5 +40,19 @@ namespace TheShoesShop_BackEnd.Services
 
             return NewCartDettail;
         }
+
+        public async Task<bool> RemoveShoes(CartDetailDTO CartDetail)
+        {
+            var CartDetailEntity = await _context.cartdetail
+                .SingleOrDefaultAsync(cd => cd.CustomerID == CartDetail.CustomerID && cd.ShoesID == CartDetail.ShoesID);
+            if (CartDetailEntity == null)
+            {
+                return false;
+            }
+
+            _context.cartdetail.Remove(CartDetailEntity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
