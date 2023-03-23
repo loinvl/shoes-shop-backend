@@ -92,7 +92,7 @@ namespace TheShoesShop_BackEnd.Controllers
         {
             try
             {
-                // Check ShoesID
+                // Check ShoesID and shoes quantity
                 if(Order.CheckoutDetails.Count == 0)
                 {
                     return BadRequest(new Response
@@ -100,6 +100,17 @@ namespace TheShoesShop_BackEnd.Controllers
                         Success = false,
                         Message = "Shoes list is empty, can't checkout"
                     });
+                }
+                foreach(CheckoutDetail CheckoutDetail in Order.CheckoutDetails)
+                {
+                    var Shoes = await _TheShoesShopServices._ShoesService.GetShoesByID(CheckoutDetail.ShoesID);
+                    if(Shoes == null || Shoes.Quantity < CheckoutDetail.Quantity) {
+                        return BadRequest( new Response
+                        {
+                            Success = false,
+                            Message = $"In warehouse, not exist Shoes(id={CheckoutDetail.ShoesID}) or not enough quantity"
+                        });
+                    }
                 }
 
 
