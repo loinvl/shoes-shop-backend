@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing.Matching;
 using TheShoesShop_BackEnd.Auth;
 using TheShoesShop_BackEnd.DTOs;
 using TheShoesShop_BackEnd.Models;
@@ -18,6 +19,8 @@ namespace TheShoesShop_BackEnd.Controllers
             _TheShoesShopServices = TheShoesShopServices;
         }
 
+
+        // Get shoes list to show before checkout
         [HttpGet("shoeses/incart")]
         [Authorize]
         public async Task<IActionResult> GetSomeShoesInCart([FromQuery(Name = "ShoesID")] List<int> ShoesIDs)
@@ -72,6 +75,54 @@ namespace TheShoesShop_BackEnd.Controllers
                 });
             }
             catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, new Response
+                {
+                    Success = false,
+                    Message = "Something error, try again"
+                });
+            }
+        }
+
+        // Checkout
+        [HttpPost("checkout")]
+        [Authorize]
+        public async Task<IActionResult> Checkout(CheckoutDTO Order)
+        {
+            try
+            {
+                // Check ShoesID
+                if(Order.CheckoutDetails.Count == 0)
+                {
+                    return BadRequest(new Response
+                    {
+                        Success = false,
+                        Message = "Shoes list is empty, can't checkout"
+                    });
+                }
+
+
+                // Checkout
+                var User = new User(HttpContext.User);
+                var NewOrder = await _TheShoesShopServices._PurchaseOrderService.Checkout(User.CustomerID, Order);
+                if(NewOrder == null)
+                {
+                    return BadRequest(new Response
+                    {
+                        Success = false,
+                        Message = "Shoes quantity in warehouse less than you want, please descrease or await"
+                    });
+                }
+
+                return Ok(new Response
+                {
+                    Success = true,
+                    Message = "Checkout successfully",
+                    Data = new { NewOrder }
+                });
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
                 return StatusCode(500, new Response

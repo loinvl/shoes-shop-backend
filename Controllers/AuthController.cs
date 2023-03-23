@@ -92,7 +92,7 @@ namespace TheShoesShop_BackEnd.Controllers
 
         // Register
         [HttpPost("register")]
-        public IActionResult Register(RegisterDTO RegisterInfo)
+        public async Task<IActionResult> Register(RegisterDTO RegisterInfo)
         {
             try
             {
@@ -108,14 +108,7 @@ namespace TheShoesShop_BackEnd.Controllers
                 }
 
                 //call service to create new customer
-                var Customer = new customer
-                {
-                    Email = RegisterInfo.Email,
-                    HashPassword = BC.HashPassword(RegisterInfo.Password),
-                    CustomerName = RegisterInfo.CustomerName,
-                };
-                var NewCustomer = _mapper.Map<CustomerDTO>
-                    (_TheShoesShopServices._CustomerService.RegisterCustomer(Customer));
+                var NewCustomer = await _TheShoesShopServices._CustomerService.RegisterCustomer(RegisterInfo);
 
                 // creating new customer is fail
                 if(NewCustomer == null)
