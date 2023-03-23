@@ -35,11 +35,18 @@ namespace TheShoesShop_BackEnd.Services
             return Customer;
         }
 
-        public customer RegisterCustomer(customer Customer)
+        public async Task<CustomerDTO> RegisterCustomer(RegisterDTO RegisterInfo)
         {
-            var NewCustomer = _context.customer.Add(Customer).Entity;
-            _context.SaveChanges();
+            var Customer = new customer
+            {
+                Email = RegisterInfo.Email,
+                HashPassword = BC.HashPassword(RegisterInfo.Password),
+                CustomerName = RegisterInfo.CustomerName,
+            };
+            var NewCustomerEntity = (await _context.customer.AddAsync(Customer)).Entity;
+            await _context.SaveChangesAsync();
 
+            var NewCustomer = _mapper.Map<CustomerDTO>(NewCustomerEntity);
             return NewCustomer;
         }
 

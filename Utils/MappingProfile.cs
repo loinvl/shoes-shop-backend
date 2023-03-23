@@ -13,6 +13,15 @@ namespace TheShoesShop_BackEnd.Utils
             CreateMap<shoes, ShoesDTO>();
             CreateMap<cartdetail, CartDetailDTO>();
             CreateMap<CartDetailDTO, cartdetail>();
+            CreateMap<PurchaseOrderDTO, purchaseorder>()
+                .ForMember(p => p.CustomerID, opt => opt.MapFrom(pDTO => pDTO.Customer!.CustomerID))
+                .ForMember(p => p.orderdetail, opt => opt.Ignore())
+                .ForMember(p => p.Customer, opt => opt.Ignore());
+            CreateMap<OrderDetailDTO, orderdetail>()
+                .ForMember(od => od.ShoesID, opt => opt.MapFrom(odDTO => odDTO.Shoes!.ShoesID))
+                .ForMember(od => od.PurchaseOrder, opt => opt.Ignore())
+                .ForMember(od => od.Shoes, opt => opt.Ignore());
+
         }
     }
 }

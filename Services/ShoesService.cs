@@ -32,5 +32,16 @@ namespace TheShoesShop_BackEnd.Services
 
             return Shoes;
         }
+
+        // Update shoes quantity in warehouse
+        public async Task<bool> UpdateShoesQuantity(int ShoesID, int Quantity)
+        {
+            var Shoes = await _context.shoes.SingleOrDefaultAsync(s => s.ShoesID == ShoesID);
+            if(Shoes == null) return false;
+
+            Shoes.Quantity = Quantity;
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
