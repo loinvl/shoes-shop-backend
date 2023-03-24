@@ -7,13 +7,15 @@
         public readonly ShoesService _ShoesService;
         public readonly CartDetailService _CartDetailService;
         public readonly PurchaseOrderService _PurchaseOrderService;
+        public readonly RateService _RateService;
 
         public TheShoesShopServices(
             CustomerService CustomerService, 
             ShoesModelService ShoesModelService,
             ShoesService ShoesService,
             CartDetailService CartDetailService,
-            PurchaseOrderService PurchaseOrderService
+            PurchaseOrderService PurchaseOrderService,
+            RateService RateService
         )
         {
             _CustomerService = CustomerService;
@@ -21,6 +23,7 @@
             _ShoesService = ShoesService;
             _CartDetailService = CartDetailService;
             _PurchaseOrderService = PurchaseOrderService;
+            _RateService = RateService;
         }
     }
 }

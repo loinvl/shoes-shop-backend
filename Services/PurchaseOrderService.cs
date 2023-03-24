@@ -9,17 +9,14 @@ namespace TheShoesShop_BackEnd.Services
     public class PurchaseOrderService
     {
         private readonly TheShoesShopDbContext _context;
-        private readonly IMapper _mapper;
-        private readonly ShoesService _ShoesService;
         private readonly CartDetailService _CartDetailService;
 
         public PurchaseOrderService(
             TheShoesShopDbContext context, 
-            IMapper mapper, 
-            CartDetailService CartDetailService) 
+            CartDetailService CartDetailService
+        ) 
         { 
             _context = context;
-            _mapper = mapper;
             _CartDetailService = CartDetailService;
         }
 
