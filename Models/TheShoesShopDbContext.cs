@@ -141,13 +141,14 @@ public partial class TheShoesShopDbContext : DbContext
 
         modelBuilder.Entity<rate>(entity =>
         {
-            entity.HasKey(e => e.RateID).HasName("PRIMARY");
+            entity.HasKey(e => new { e.PurchaseOrderID, e.ShoesID })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
             entity.HasIndex(e => e.CustomerID, "Rate_FkCustomerID");
 
-            entity.HasIndex(e => e.ShoesModelID, "Rate_FkShoesModelID");
-
             entity.Property(e => e.Content).HasColumnType("text");
+            entity.Property(e => e.ImageLink).HasColumnType("text");
             entity.Property(e => e.RateTime).HasColumnType("datetime");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.rate)
@@ -155,10 +156,10 @@ public partial class TheShoesShopDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Rate_FkCustomerID");
 
-            entity.HasOne(d => d.ShoesModel).WithMany(p => p.rate)
-                .HasForeignKey(d => d.ShoesModelID)
+            entity.HasOne(d => d.orderdetail).WithOne(p => p.rate)
+                .HasForeignKey<rate>(d => new { d.PurchaseOrderID, d.ShoesID })
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Rate_FkShoesModelID");
+                .HasConstraintName("Rate_FkOrder");
         });
 
         modelBuilder.Entity<shoes>(entity =>
@@ -204,8 +205,7 @@ public partial class TheShoesShopDbContext : DbContext
 
             entity.Property(e => e.ImageLink)
                 .IsRequired()
-                .HasMaxLength(200)
-                .IsFixedLength();
+                .HasColumnType("text");
 
             entity.HasOne(d => d.ShoesModel).WithMany(p => p.shoesmodelimage)
                 .HasForeignKey(d => d.ShoesModelID)

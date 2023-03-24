@@ -9,17 +9,14 @@ namespace TheShoesShop_BackEnd.Services
     public class PurchaseOrderService
     {
         private readonly TheShoesShopDbContext _context;
-        private readonly IMapper _mapper;
-        private readonly ShoesService _ShoesService;
         private readonly CartDetailService _CartDetailService;
 
         public PurchaseOrderService(
             TheShoesShopDbContext context, 
-            IMapper mapper, 
-            CartDetailService CartDetailService) 
+            CartDetailService CartDetailService
+        ) 
         { 
             _context = context;
-            _mapper = mapper;
             _CartDetailService = CartDetailService;
         }
 
@@ -71,15 +68,16 @@ namespace TheShoesShop_BackEnd.Services
 
 
             // Return new purchase order
-            var NewOrder = await GetPurchaseOrderByID(NewOrderEntity.PurchaseOrderID);
+            var NewOrder = await GetPurchaseOrderByID(NewOrderEntity.PurchaseOrderID, CustomerID);
             return NewOrder;
         }
 
         // Get one purchase order
-        public async Task<PurchaseOrderDTO?> GetPurchaseOrderByID(int PurchaseOrderID)
+        public async Task<PurchaseOrderDTO?> GetPurchaseOrderByID(int PurchaseOrderID, int CustomerID)
         {
             var PurchaseOrder = await (from p in _context.purchaseorder
                                        where p.PurchaseOrderID == PurchaseOrderID
+                                       && p.CustomerID == CustomerID
                                        select new PurchaseOrderDTO
                                        {
                                            PurchaseOrderID = p.PurchaseOrderID,
@@ -95,6 +93,7 @@ namespace TheShoesShop_BackEnd.Services
                                                           where od.PurchaseOrderID == p.PurchaseOrderID
                                                           select new OrderDetailDTO
                                                           {
+                                                              PurchaseOrderID = p.PurchaseOrderID,
                                                               Quantity = od.Quantity,
                                                               UnitPrice = od.UnitPrice,
                                                               Shoes = (from s in _context.shoes
@@ -110,6 +109,44 @@ namespace TheShoesShop_BackEnd.Services
                                        }).FirstOrDefaultAsync();
 
             return PurchaseOrder;
+        }
+
+        // Get all purchase order
+        public async Task<IEnumerable<PurchaseOrderDTO>> GetAllPurchaseOrderOfCustomer(int CustomerID)
+        {
+            var PurchaseOrderList = await (from p in _context.purchaseorder
+                                       where p.CustomerID == CustomerID
+                                       select new PurchaseOrderDTO
+                                       {
+                                           PurchaseOrderID = p.PurchaseOrderID,
+                                           Phone = p.Phone,
+                                           Address = p.Address,
+                                           Email = p.Email,
+                                           CustomerName = p.CustomerName,
+                                           OrderStatus = p.OrderStatus,
+                                           Note = p.Note,
+                                           OrderTime = p.OrderTime,
+                                           Customer = null,
+                                           OrderDetail = (from od in _context.orderdetail
+                                                          where od.PurchaseOrderID == p.PurchaseOrderID
+                                                          select new OrderDetailDTO
+                                                          {
+                                                              PurchaseOrderID = p.PurchaseOrderID,
+                                                              Quantity = od.Quantity,
+                                                              UnitPrice = od.UnitPrice,
+                                                              Shoes = (from s in _context.shoes
+                                                                       where s.ShoesID == od.ShoesID
+                                                                       select new ShoesDTO
+                                                                       {
+                                                                           ShoesID = s.ShoesID,
+                                                                           Color = s.Color,
+                                                                           ShoesStatus = s.ShoesStatus,
+                                                                           Size = s.Size
+                                                                       }).FirstOrDefault(),
+                                                          }).ToList(),
+                                       }).ToListAsync();
+
+            return PurchaseOrderList;
         }
     }
 }

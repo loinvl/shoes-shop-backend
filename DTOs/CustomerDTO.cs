@@ -18,7 +18,7 @@ namespace TheShoesShop_BackEnd.DTOs
 
         public string? Address { get; set; }
 
-        [RegularExpression(@"^[0-3]$", ErrorMessage = "Invalid phone format")]
+        [RegularExpression(@"^[0-3]$", ErrorMessage = "Invalid account status format")]
         public int? AccountStatus { get; set; }
     }
 }

@@ -7,9 +7,9 @@ namespace TheShoesShop_BackEnd.Models;
 
 public partial class rate
 {
-    public int RateID { get; set; }
+    public int PurchaseOrderID { get; set; }
 
-    public int ShoesModelID { get; set; }
+    public int ShoesID { get; set; }
 
     public int CustomerID { get; set; }
 
@@ -19,7 +19,9 @@ public partial class rate
 
     public DateTime RateTime { get; set; }
 
+    public string ImageLink { get; set; }
+
     public virtual customer Customer { get; set; }
 
-    public virtual shoesmodel ShoesModel { get; set; }
+    public virtual orderdetail orderdetail { get; set; }
 }
