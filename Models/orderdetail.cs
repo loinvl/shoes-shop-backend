@@ -18,4 +18,6 @@ public partial class orderdetail
     public virtual purchaseorder PurchaseOrder { get; set; }
 
     public virtual shoes Shoes { get; set; }
+
+    public virtual rate rate { get; set; }
 }

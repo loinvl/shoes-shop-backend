@@ -4,7 +4,7 @@ namespace TheShoesShop_BackEnd.DTOs
 {
     public class RateDTO
     {
-        public int? RateID { get; set; }
+        public ShoesDTO? Shoes { get; set; }
 
         public CustomerDTO? Customer { get; set; }
 
@@ -13,5 +13,7 @@ namespace TheShoesShop_BackEnd.DTOs
         public string? Content { get; set; }
 
         public DateTime? RateTime { get; set; }
+
+        public string? ImageLink { get; set; }
     }
 }

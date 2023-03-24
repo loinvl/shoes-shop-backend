@@ -19,8 +19,6 @@ public partial class shoesmodel
 
     public virtual brand Brand { get; set; }
 
-    public virtual ICollection<rate> rate { get; } = new List<rate>();
-
     public virtual ICollection<shoes> shoes { get; } = new List<shoes>();
 
     public virtual ICollection<shoesmodelimage> shoesmodelimage { get; } = new List<shoesmodelimage>();

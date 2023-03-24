@@ -126,12 +126,14 @@ namespace TheShoesShop_BackEnd.Controllers
                     });
                 }
 
-                return Ok(new Response
-                {
-                    Success = true,
-                    Message = "Checkout successfully",
-                    Data = new { NewOrder }
-                });
+                return Created(
+                    HttpContext.Request.Host.Value,
+                    new Response                
+                    {
+                        Success = true,
+                        Message = "Checkout successfully",
+                        Data = new { NewOrder }
+                    });
             }
             catch (Exception ex)
             {
