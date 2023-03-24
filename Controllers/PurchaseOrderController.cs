@@ -143,5 +143,78 @@ namespace TheShoesShop_BackEnd.Controllers
                 });
             }
         }
+
+
+        // Get one purchaseorder
+        [HttpGet("list/{PurchaseOrderID}")]
+        [Authorize]
+        public async Task<IActionResult> GetPurchaseOrderByID(int PurchaseOrderID)
+        {
+            try
+            {
+                // Get auth
+                var User = new User(HttpContext.User);
+
+                //
+                var PurchaseOrder = await _TheShoesShopServices._PurchaseOrderService
+                    .GetPurchaseOrderByID(PurchaseOrderID, User.CustomerID);
+                if (PurchaseOrder == null)
+                {
+                    return BadRequest(new Response
+                    {
+                        Success = false,
+                        Message = $"Purchase order with id={PurchaseOrder} is not exist"
+                    });
+                }
+
+                return Ok(new Response
+                {
+                    Success = true,
+                    Message = "Get purchase order successfully",
+                    Data = new { PurchaseOrder }
+                });
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, new Response
+                {
+                    Success = false,
+                    Message = "Something error, try again"
+                });
+            }
+        }
+
+        // Get all purchaseorder of customer
+        [HttpGet("list")]
+        [Authorize]
+        public async Task<IActionResult> GetAllPurchaseOrderOfCustomer()
+        {
+            try
+            {
+                // Get auth
+                var User = new User(HttpContext.User);
+
+                //
+                var PurchaseOrderList = await _TheShoesShopServices._PurchaseOrderService
+                    .GetAllPurchaseOrderOfCustomer(User.CustomerID);
+
+                return Ok(new Response
+                {
+                    Success = true,
+                    Message = "Get purchase order successfully",
+                    Data = new { PurchaseOrderList }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, new Response
+                {
+                    Success = false,
+                    Message = "Something error, try again"
+                });
+            }
+        }
     }
 }
