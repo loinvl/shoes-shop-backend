@@ -85,15 +85,14 @@ namespace TheShoesShop_BackEnd.Services
             await _context.SaveChangesAsync();
 
             //return
-            var RateID = new RateID { PurchaseOrderID = NewRateEntity.PurchaseOrderID, ShoesID = NewRateEntity.ShoesID };
-            var NewRate = await GetRateOfOneOrder( RateID, CustomerID);
+            var NewRate = await GetRateOfOneOrder(NewRateEntity.PurchaseOrderID, NewRateEntity.ShoesID, CustomerID);
             return NewRate;
         }
 
-        public async Task<RateDTO?> GetRateOfOneOrder(RateID RateID, int CustomerID)
+        public async Task<RateDTO?> GetRateOfOneOrder(int PurchaseOrderID, int ShoesID, int CustomerID)
         {
             var Rate = await (from r in _context.rate
-                            where r.PurchaseOrderID == RateID.PurchaseOrderID && r.ShoesID == RateID.ShoesID
+                            where r.PurchaseOrderID == PurchaseOrderID && r.ShoesID == ShoesID
                             && r.CustomerID == CustomerID
                             select new RateDTO
                             {
