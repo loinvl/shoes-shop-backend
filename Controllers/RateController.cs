@@ -45,7 +45,7 @@ namespace TheShoesShop_BackEnd.Controllers
         }
 
         // Add rate when purchased, one rate per one order
-        [HttpPost("add")]
+        [HttpPost("orderdetail/add")]
         [Authorize]
         public async Task<IActionResult> AddRate(AddingRateDTO Rate)
         {
@@ -61,7 +61,8 @@ namespace TheShoesShop_BackEnd.Controllers
                     return BadRequest(new Response
                     {
                         Success = false,
-                        Message = $"Purchase order with id={Rate.PurchaseOrderID} is rated or not belong to you"
+                        Message = $"Order with purchase order id={Rate.PurchaseOrderID} and " +
+                        $"shoesid id = {Rate.ShoesID} is rated or not belong to you"
                     });
                 }
 
@@ -73,6 +74,46 @@ namespace TheShoesShop_BackEnd.Controllers
                             Message = "Add new rate successfully",
                             Data = new { NewRate }
                         });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, new Response
+                {
+                    Success = false,
+                    Message = "Something error, try again"
+                });
+            }
+        }
+
+        // Get one rate of one order detail
+        [HttpGet("orderdetail/get/{PurchaseOrderID}/{ShoesID}")]
+        [Authorize]
+        public async Task<IActionResult> GetRateOfOneOrder(int PurchaseOrderID, int ShoesID)
+        {
+            try
+            {
+                // Get auth
+                var User = new User(HttpContext.User);
+
+                //
+                var Rate = await _TheShoesShopServices._RateService.GetRateOfOneOrder(PurchaseOrderID, ShoesID, User.CustomerID);
+                if(Rate == null)
+                {
+                    return BadRequest(new Response
+                    {
+                        Success = false,
+                        Message = $"Order with purchase order id={PurchaseOrderID} and " +
+                        $"shoesid id = {ShoesID} is rated or not belong to you"
+                    });
+                }
+
+                return Ok(new Response
+                {
+                    Success = true,
+                    Message = "Get rate of one order detail successfully",
+                    Data = new { Rate }
+                });
             }
             catch (Exception ex)
             {
