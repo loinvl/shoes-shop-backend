@@ -13,6 +13,17 @@ using TheShoesShop_BackEnd.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add cors to allow acess from another domain
+var TheShoesShopFrontendDomain = builder.Configuration["AnotherDomain:TheShoesShopFrontend"];
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins(TheShoesShopFrontendDomain)
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+    });
+});
 // Add services to the container.
 var connectionString = builder.Configuration["ConnectionStrings:MySqlConnection"];
 builder.Services.AddDbContext<TheShoesShopDbContext>(options => options.UseMySQL(connectionString));
@@ -108,6 +119,8 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Public")),
     RequestPath = ""
 });
+
+app.UseCors();
 
 app.UseAuthentication();
 
