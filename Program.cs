@@ -111,6 +111,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors();
+
 app.UseHttpsRedirection();
 
 //Use public folder
@@ -119,8 +121,6 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Public")),
     RequestPath = ""
 });
-
-app.UseCors();
 
 app.UseAuthentication();
 
