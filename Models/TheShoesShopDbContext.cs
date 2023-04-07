@@ -89,6 +89,7 @@ public partial class TheShoesShopDbContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(10)
                 .IsFixedLength();
+            entity.Property(e => e.avatarLink).HasColumnType("text");
         });
 
         modelBuilder.Entity<orderdetail>(entity =>
