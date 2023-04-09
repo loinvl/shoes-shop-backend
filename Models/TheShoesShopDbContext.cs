@@ -204,9 +204,7 @@ public partial class TheShoesShopDbContext : DbContext
 
             entity.HasIndex(e => e.ShoesModelID, "ShoesModelImage_FkShoesModelID");
 
-            entity.Property(e => e.ImageLink)
-                .IsRequired()
-                .HasColumnType("text");
+            entity.Property(e => e.ImageLink).HasColumnType("text");
 
             entity.HasOne(d => d.ShoesModel).WithMany(p => p.shoesmodelimage)
                 .HasForeignKey(d => d.ShoesModelID)
