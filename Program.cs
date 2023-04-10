@@ -94,6 +94,7 @@ builder.Services.AddScoped<PurchaseOrderService>();
 builder.Services.AddScoped<RateService>();
 builder.Services.AddScoped<BrandService>();
 builder.Services.AddScoped<SendingEmail>();
+builder.Services.AddSingleton<ImageUpload>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

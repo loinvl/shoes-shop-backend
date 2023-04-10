@@ -30,7 +30,7 @@ namespace TheShoesShop_BackEnd.Utils
                     $"<body>\r\n {Content} \r\n</body>\r\n" +
                     $"</html>";
                 var message = new MimeMessage();
-                message.From.Add(new MailboxAddress("Sender Name", FromEmail));
+                message.From.Add(new MailboxAddress("The Shoes Shop", FromEmail));
                 message.To.Add(new MailboxAddress(ToEmail, ToEmail));
                 message.Subject = Subject;
                 message.Body = new TextPart("html") { Text = Content };
