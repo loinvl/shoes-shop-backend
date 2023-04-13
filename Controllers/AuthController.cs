@@ -55,7 +55,7 @@ namespace TheShoesShop_BackEnd.Controllers
                     return BadRequest(new Response
                     {
                         Success = false,
-                        Message = "Email dont register account",
+                        Message = "Email chưa được đăng ký",
                     });
                 }
 
@@ -65,7 +65,7 @@ namespace TheShoesShop_BackEnd.Controllers
                     return BadRequest(new Response
                     {
                         Success = false,
-                        Message = "Incorrect password",
+                        Message = "Mật khẩu không chính xác",
                     });
                 }
 
@@ -280,7 +280,6 @@ namespace TheShoesShop_BackEnd.Controllers
                 var NewAccessToken = _JWTService.GenerateToken(User, ExpAccessToken);
                 var NewRefreshToken = _JWTService.GenerateToken(User, ExpRefreshToken);
 
-                Response.Cookies.Append("fsfs", "sfs");
                 return Ok(new Response
                 {
                     Success = true,
