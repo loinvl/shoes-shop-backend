@@ -8,6 +8,7 @@ namespace TheShoesShop_BackEnd.DTOs
         [RegularExpression(@"^[1-9][0-9]*$", ErrorMessage = "Invalid order detail id format")]
         public int? PurchaseOrderID { get; set; }
 
+        public ShoesModelDTO? ShoesModel { get; set; }
         public ShoesDTO? Shoes { get; set; }
 
         [RegularExpression(@"^[1-9][0-9]*$", ErrorMessage = "Invalid unit price format")]

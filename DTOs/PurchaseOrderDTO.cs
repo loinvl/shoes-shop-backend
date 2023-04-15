@@ -19,7 +19,6 @@ namespace TheShoesShop_BackEnd.DTOs
         [RegularExpression(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$", ErrorMessage = "Invalid email format")]
         public string? Email { get; set; }
 
-        // Annotation later
         public DateTime? OrderTime { get; set; }
 
         public string? Address { get; set; }
