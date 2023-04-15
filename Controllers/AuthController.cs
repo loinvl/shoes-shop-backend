@@ -157,7 +157,8 @@ namespace TheShoesShop_BackEnd.Controllers
                     return BadRequest(new Response
                     {
                         Success = false,
-                        Message = "Email incorrect that never use to register account"
+                        Message = "Email incorrect that never use to register account",
+                        ErrorCode = 1
                     });
                 }
 
@@ -166,13 +167,13 @@ namespace TheShoesShop_BackEnd.Controllers
                 var ExpToken = 5;
                 var Token = _JWTService.GenerateToken
                     (new User { CustomerID = Customer.CustomerID, Email = Customer.Email }, ExpToken);
-                var FrontendHost = _config["Frontend:Host"];
+                var FrontendHost = _config["AnotherDomain:TheShoesShopFrontend"];
                 var ToEmail = Customer.Email;
                 var Subject = "Reset password";
                 var Content = $"Hi {Customer.CustomerName}!<br/>" +
                     $"This below link use to reset password, After 5 minutes, link has expired.<br/>" +
                     $"Note important, dont share that link to anyone to security of your account.<br/>" +
-                    $"Link: {FrontendHost}/auth/password/reset?token={Token}";
+                    $"Link: {FrontendHost}/auth/reset-password?token={Token}";
 
                 // Send email to user
                 var SentStatus = await _SendingEmail.SendToEmail(ToEmail, Subject, Content);
@@ -183,7 +184,8 @@ namespace TheShoesShop_BackEnd.Controllers
                     return StatusCode(500, new Response
                     {
                         Success = false,
-                        Message = "Falture in sending email process, try to again, never give up"
+                        Message = "Falture in sending email process, try to again, never give up",
+                        ErrorCode = 500
                     });
                 }
 
@@ -215,7 +217,8 @@ namespace TheShoesShop_BackEnd.Controllers
                     return BadRequest(new Response
                     {
                         Success = false,
-                        Message = "Invalid token"
+                        Message = "Invalid token",
+                        ErrorCode = 1
                     });
                 }
 
@@ -229,7 +232,8 @@ namespace TheShoesShop_BackEnd.Controllers
                     return BadRequest(new Response
                     {
                         Success = false,
-                        Message = "Invalid input, try to again, never give up"
+                        Message = "Invalid input, try to again, never give up",
+                        ErrorCode = 2
                     });
                 }
 
@@ -246,7 +250,8 @@ namespace TheShoesShop_BackEnd.Controllers
                 return StatusCode(500, new Response
                 {
                     Success = false,
-                    Message = "Error server, try to again, never give up"
+                    Message = "Error server, try to again, never give up",
+                    ErrorCode = 500
                 });
             }
         }
