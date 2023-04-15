@@ -218,5 +218,56 @@ namespace TheShoesShop_BackEnd.Controllers
                 });
             }
         }
+
+        // cancel order when order is not transited
+        [HttpPatch("list/{PurchaseOrderID}/cancle")]
+        [Authorize]
+        public async Task<IActionResult> CanclePurchase(int PurchaseOrderID)
+        {
+            try
+            {
+                // get user
+                var User = new User(HttpContext.User);
+
+                // check purchase order id
+                var PurchaseOrder = await _TheShoesShopServices._PurchaseOrderService.GetPurchaseOrderByID(PurchaseOrderID, User.CustomerID);
+                if (PurchaseOrder == null)
+                {
+                    return BadRequest(new Response
+                    {
+                        Success = false,
+                        Message = $"Purchase order {PurchaseOrder} doesn't exist",
+                    });
+                }
+
+                // cancle purchase order
+                var CanclePurchase = await _TheShoesShopServices._PurchaseOrderService.CanclePurchase(PurchaseOrderID, User.CustomerID);
+
+                if(CanclePurchase == null)
+                {
+                    return BadRequest(new Response
+                    {
+                        Success = false,
+                        Message = $"Purchase in transit process, can't cancle",
+                    });
+                }
+
+                return Ok(new Response
+                {
+                    Success = true,
+                    Message = "Cancle a purchase successfully",
+                    Data = new { CanclePurchase }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, new Response
+                {
+                    Success = false,
+                    Message = "Something error, try again"
+                });
+            }
+        }
     }
 }

@@ -105,6 +105,19 @@ namespace TheShoesShop_BackEnd.Services
                                                                            ShoesStatus = s.ShoesStatus,
                                                                            Size = s.Size
                                                                        }).FirstOrDefault(),
+                                                              ShoesModel = (from s in _context.shoes
+                                                                            where s.ShoesID == od.ShoesID
+                                                                            join sm in _context.shoesmodel on s.ShoesModelID equals sm.ShoesModelID
+                                                                            select new ShoesModelDTO
+                                                                            {
+                                                                                ShoesModelName = sm.ShoesModelName,
+                                                                                Images = (from i in _context.shoesmodelimage
+                                                                                          where i.ShoesModelID == sm.ShoesModelID
+                                                                                          select new ShoesModelImageDTO
+                                                                                          {
+                                                                                              ImageLink = i.ImageLink
+                                                                                          }).ToList(),
+                                                                            }).FirstOrDefault(),
                                                           }).ToList(),
                                        }).FirstOrDefaultAsync();
 
@@ -143,10 +156,44 @@ namespace TheShoesShop_BackEnd.Services
                                                                            ShoesStatus = s.ShoesStatus,
                                                                            Size = s.Size
                                                                        }).FirstOrDefault(),
+                                                              ShoesModel = (from s in _context.shoes
+                                                                            where s.ShoesID == od.ShoesID
+                                                                            join sm in _context.shoesmodel on s.ShoesModelID equals sm.ShoesModelID
+                                                                            select new ShoesModelDTO
+                                                                            {
+                                                                                ShoesModelName = sm.ShoesModelName,
+                                                                                Images = (from i in _context.shoesmodelimage
+                                                                                          where i.ShoesModelID == sm.ShoesModelID
+                                                                                          select new ShoesModelImageDTO
+                                                                                          {
+                                                                                              ImageLink = i.ImageLink
+                                                                                          }).ToList(),
+                                                                            }).FirstOrDefault(),
                                                           }).ToList(),
                                        }).ToListAsync();
 
             return PurchaseOrderList;
+        }
+
+        public async Task<PurchaseOrderDTO?> CanclePurchase(int PurchaseOrderID, int CustomerID)
+        {
+            var CanclePurchase = await _context.purchaseorder.SingleOrDefaultAsync(p =>
+                p.PurchaseOrderID == PurchaseOrderID
+                && p.CustomerID == CustomerID
+                && p.OrderStatus < 2);
+
+            if(CanclePurchase == null)
+            {
+                return null;
+            }
+
+            // update
+            CanclePurchase.OrderStatus = 5;
+            await _context.SaveChangesAsync();
+
+            // get purhcase order
+            var NewPurchase = await GetPurchaseOrderByID(PurchaseOrderID, CustomerID);
+            return NewPurchase;
         }
     }
 }

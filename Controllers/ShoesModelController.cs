@@ -24,15 +24,15 @@ namespace TheShoesShop_BackEnd.Controllers
             string? Search,
             int? Size, string? Color,
             int? From, int? To,
-            string? Brand,
-            int? SortType
+            int? BrandID,
+            int? Sort
         )
         {
             try
             {
                 // Find list with property
                 var ShoesModelList = await _TheShoesShopServices._ShoesModelService
-                    .GetShoesModelList(PageIndex, ItemPerPage, Search, Size, Color, From, To, Brand, SortType);
+                    .GetShoesModelList(PageIndex, ItemPerPage, Search, Size, Color, From, To, BrandID, Sort);
 
                 // Return result
                 return Ok(new Response
@@ -52,6 +52,32 @@ namespace TheShoesShop_BackEnd.Controllers
                 });
             }
 
+        }
+
+        // get total of shoes model
+        [HttpGet("list/count")]
+        public async Task<IActionResult> GetTotal()
+        {
+            try
+            {
+                var shoesModelCount = await _TheShoesShopServices._ShoesModelService.GetShoesModelCount();
+
+                return Ok(new Response
+                {
+                    Success = true,
+                    Message = "Ok",
+                    Data = new { shoesModelCount }
+                });
+            }
+            catch(Exception ex )
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, new Response
+                {
+                    Success = false,
+                    Message = "Get total is fail"
+                });
+            }
         }
 
         // Get one shoes model by id
@@ -75,7 +101,7 @@ namespace TheShoesShop_BackEnd.Controllers
                 // Found
                 return Ok(new Response
                 {
-                    Success = false,
+                    Success = true,
                     Message = "Get shoes model successfully",
                     Data = new { ShoesModel }
                 });
