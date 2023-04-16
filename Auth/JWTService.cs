@@ -23,8 +23,8 @@ namespace TheShoesShop_BackEnd.Auth
             for (int i = 0; i < properties.Length; i++)
             {
                 var name = properties[i].Name;
-                var value = properties[i].GetValue(Obj, null)!.ToString();
-                Claims[i] = new Claim(name, value!);
+                var value = properties[i].GetValue(Obj, null)?.ToString() ?? "";
+                Claims[i] = new Claim(name, value);
             }
 
             return Claims;
