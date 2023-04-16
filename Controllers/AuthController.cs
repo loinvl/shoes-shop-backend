@@ -103,7 +103,8 @@ namespace TheShoesShop_BackEnd.Controllers
                     return BadRequest(new Response
                     {
                         Success = false,
-                        Message = "Email is already register"
+                        Message = "Email is already register",
+                        ErrorCode = 1
                     });
                 }
 
@@ -116,7 +117,8 @@ namespace TheShoesShop_BackEnd.Controllers
                     return StatusCode(500, new Response
                     {
                         Success = false,
-                        Message = "Creating new customer is fail, never give up"
+                        Message = "Creating new customer is fail, never give up",
+                        ErrorCode = 2
                     });
                 }
 
@@ -134,7 +136,12 @@ namespace TheShoesShop_BackEnd.Controllers
             catch(Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return BadRequest(ex.ToString());
+                return StatusCode(500, new Response
+                {
+                    Success = false,
+                    Message = "Server error, try again",
+                    ErrorCode = 500
+                });
             }
 
         }
