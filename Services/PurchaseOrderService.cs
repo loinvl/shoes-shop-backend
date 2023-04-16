@@ -175,20 +175,20 @@ namespace TheShoesShop_BackEnd.Services
             return PurchaseOrderList;
         }
 
-        public async Task<PurchaseOrderDTO?> CanclePurchase(int PurchaseOrderID, int CustomerID)
+        public async Task<PurchaseOrderDTO?> CancelPurchase(int PurchaseOrderID, int CustomerID)
         {
-            var CanclePurchase = await _context.purchaseorder.SingleOrDefaultAsync(p =>
+            var CancelPurchase = await _context.purchaseorder.SingleOrDefaultAsync(p =>
                 p.PurchaseOrderID == PurchaseOrderID
                 && p.CustomerID == CustomerID
                 && p.OrderStatus < 2);
 
-            if(CanclePurchase == null)
+            if(CancelPurchase == null)
             {
                 return null;
             }
 
             // update
-            CanclePurchase.OrderStatus = 5;
+            CancelPurchase.OrderStatus = 5;
             await _context.SaveChangesAsync();
 
             // get purhcase order
