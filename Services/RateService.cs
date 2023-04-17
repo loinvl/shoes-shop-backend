@@ -119,5 +119,35 @@ namespace TheShoesShop_BackEnd.Services
 
             return Rate;
         }
+
+        public async Task<IEnumerable<RateDTO>> GetRateListOfPurchase(int PurchaseOrderID, int CustomerID)
+        {
+            var RateList = await (from r in _context.rate
+                              where r.PurchaseOrderID == PurchaseOrderID && r.CustomerID == CustomerID
+                              select new RateDTO
+                              {
+                                  Content = r.Content,
+                                  RateStar = r.RateStar,
+                                  RateTime = r.RateTime,
+                                  ImageLink = r.ImageLink,
+                                  Customer = (from c in _context.customer
+                                              where c.CustomerID == r.CustomerID
+                                              select new CustomerDTO
+                                              {
+                                                  CustomerID = c.CustomerID,
+                                                  CustomerName = c.CustomerName
+                                              }).FirstOrDefault(),
+                                  Shoes = (from s in _context.shoes
+                                           where s.ShoesID == r.ShoesID
+                                           select new ShoesDTO
+                                           {
+                                               ShoesID = s.ShoesID,
+                                               Color = s.Color,
+                                               Size = s.Size
+                                           }).FirstOrDefault(),
+                              }).ToListAsync();
+
+            return RateList;
+        }
     }
 }

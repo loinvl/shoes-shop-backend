@@ -125,5 +125,36 @@ namespace TheShoesShop_BackEnd.Controllers
                 });
             }
         }
+
+        // Get rate  list of one purchase order
+        [HttpGet("orderdetail/get/{PurchaseOrderID}")]
+        [Authorize]
+        public async Task<IActionResult> GetRateListOfPurchase(int PurchaseOrderID)
+        {
+            try
+            {
+                // Get auth
+                var User = new User(HttpContext.User);
+
+                //
+                var RateList = await _TheShoesShopServices._RateService.GetRateListOfPurchase(PurchaseOrderID, User.CustomerID);
+
+                return Ok(new Response
+                {
+                    Success = true,
+                    Message = "Get rate of one order detail successfully",
+                    Data = new { RateList }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, new Response
+                {
+                    Success = false,
+                    Message = "Something error, try again"
+                });
+            }
+        }
     }
 }
