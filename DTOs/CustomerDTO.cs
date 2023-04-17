@@ -22,5 +22,8 @@ namespace TheShoesShop_BackEnd.DTOs
 
         [RegularExpression(@"^[0-3]$", ErrorMessage = "Invalid account status format")]
         public int? AccountStatus { get; set; }
+
+        [RegularExpression(@"^[0-1]$", ErrorMessage = "Invalid user role format")]
+        public int? UserRole { get; set; }
     }
 }

@@ -70,7 +70,12 @@ namespace TheShoesShop_BackEnd.Controllers
                 }
 
                 //valid
-                var User = new User { CustomerID = Customer.CustomerID, Email = Customer.Email, AvatarLink = Customer.AvatarLink };
+                var User = new User { 
+                    CustomerID = Customer.CustomerID, 
+                    Email = Customer.Email, 
+                    AvatarLink = Customer.AvatarLink,
+                    UserRole = Customer.UserRole,
+                };
                 var ExpAccessToken = int.Parse(_config["JWT:AccessTokenValidityInMinutes"]!);
                 var ExpRefreshToken = int.Parse(_config["JWT:RefreshTokenValidityInMinutes"]!);
                 var AccessToken = _JWTService.GenerateToken(User, ExpAccessToken);

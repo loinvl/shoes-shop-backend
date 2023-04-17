@@ -23,6 +23,8 @@ public partial class customer
 
     public int? AccountStatus { get; set; }
 
+    public int? UserRole { get; set; }
+
     public virtual ICollection<cartdetail> cartdetail { get; } = new List<cartdetail>();
 
     public virtual ICollection<purchaseorder> purchaseorder { get; } = new List<purchaseorder>();

@@ -90,6 +90,7 @@ public partial class TheShoesShopDbContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(10)
                 .IsFixedLength();
+            entity.Property(e => e.UserRole).HasDefaultValueSql("'0'");
         });
 
         modelBuilder.Entity<orderdetail>(entity =>
