@@ -19,9 +19,11 @@ public partial class customer
 
     public string Address { get; set; }
 
-    public string avatarLink { get; set; }
+    public string AvatarLink { get; set; }
 
     public int? AccountStatus { get; set; }
+
+    public int? UserRole { get; set; }
 
     public virtual ICollection<cartdetail> cartdetail { get; } = new List<cartdetail>();
 

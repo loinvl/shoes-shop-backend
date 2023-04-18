@@ -80,7 +80,7 @@ namespace TheShoesShop_BackEnd.Services
                 CustomerEntity.CustomerName = Profile.CustomerName;
                 CustomerEntity.Address = Profile.Address;
                 CustomerEntity.Phone = Profile.Phone;
-                CustomerEntity.avatarLink = Profile.avatarLink;
+                CustomerEntity.AvatarLink = Profile.AvatarLink;
                 await _context.SaveChangesAsync();
             }
 

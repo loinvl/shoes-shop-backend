@@ -220,9 +220,9 @@ namespace TheShoesShop_BackEnd.Controllers
         }
 
         // cancel order when order is not transited
-        [HttpPatch("list/{PurchaseOrderID}/cancle")]
+        [HttpPatch("list/{PurchaseOrderID}/cancel")]
         [Authorize]
-        public async Task<IActionResult> CanclePurchase(int PurchaseOrderID)
+        public async Task<IActionResult> CancelPurchase(int PurchaseOrderID)
         {
             try
             {
@@ -240,23 +240,23 @@ namespace TheShoesShop_BackEnd.Controllers
                     });
                 }
 
-                // cancle purchase order
-                var CanclePurchase = await _TheShoesShopServices._PurchaseOrderService.CanclePurchase(PurchaseOrderID, User.CustomerID);
+                // cancel purchase order
+                var CancelPurchase = await _TheShoesShopServices._PurchaseOrderService.CancelPurchase(PurchaseOrderID, User.CustomerID);
 
-                if(CanclePurchase == null)
+                if(CancelPurchase == null)
                 {
                     return BadRequest(new Response
                     {
                         Success = false,
-                        Message = $"Purchase in transit process, can't cancle",
+                        Message = $"Purchase in transit process, can't cancel",
                     });
                 }
 
                 return Ok(new Response
                 {
                     Success = true,
-                    Message = "Cancle a purchase successfully",
-                    Data = new { CanclePurchase }
+                    Message = "Cancel a purchase successfully",
+                    Data = new { CancelPurchase }
                 });
             }
             catch (Exception ex)

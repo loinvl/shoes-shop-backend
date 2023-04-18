@@ -76,6 +76,7 @@ public partial class TheShoesShopDbContext : DbContext
 
             entity.Property(e => e.AccountStatus).HasDefaultValueSql("'0'");
             entity.Property(e => e.Address).HasColumnType("text");
+            entity.Property(e => e.AvatarLink).HasColumnType("text");
             entity.Property(e => e.CustomerName)
                 .IsRequired()
                 .HasMaxLength(50)
@@ -89,7 +90,7 @@ public partial class TheShoesShopDbContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(10)
                 .IsFixedLength();
-            entity.Property(e => e.avatarLink).HasColumnType("text");
+            entity.Property(e => e.UserRole).HasDefaultValueSql("'0'");
         });
 
         modelBuilder.Entity<orderdetail>(entity =>
