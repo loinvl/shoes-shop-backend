@@ -73,11 +73,11 @@ namespace TheShoesShop_BackEnd.Services
         }
 
         // Get one purchase order
-        public async Task<PurchaseOrderDTO?> GetPurchaseOrderByID(int PurchaseOrderID, int CustomerID)
+        public async Task<PurchaseOrderDTO?> GetPurchaseOrderByID(int PurchaseOrderID, int? CustomerID)
         {
             var PurchaseOrder = await (from p in _context.purchaseorder
                                        where p.PurchaseOrderID == PurchaseOrderID
-                                       && p.CustomerID == CustomerID
+                                       where CustomerID == null || p.CustomerID == CustomerID
                                        select new PurchaseOrderDTO
                                        {
                                            PurchaseOrderID = p.PurchaseOrderID,
@@ -175,6 +175,7 @@ namespace TheShoesShop_BackEnd.Services
             return PurchaseOrderList;
         }
 
+        // customer cancel purchase
         public async Task<PurchaseOrderDTO?> CancelPurchase(int PurchaseOrderID, int CustomerID)
         {
             var CancelPurchase = await _context.purchaseorder.SingleOrDefaultAsync(p =>
@@ -182,7 +183,7 @@ namespace TheShoesShop_BackEnd.Services
                 && p.CustomerID == CustomerID
                 && p.OrderStatus < 2);
 
-            if(CancelPurchase == null)
+            if (CancelPurchase == null)
             {
                 return null;
             }
@@ -193,6 +194,26 @@ namespace TheShoesShop_BackEnd.Services
 
             // get purhcase order
             var NewPurchase = await GetPurchaseOrderByID(PurchaseOrderID, CustomerID);
+            return NewPurchase;
+        }
+
+        // admin update purchase status
+        public async Task<PurchaseOrderDTO?> UpdatePurchaseStatus(int PurchaseOrderID, int Status)
+        {
+            var Purchase = await _context.purchaseorder.SingleOrDefaultAsync(p =>
+                p.PurchaseOrderID == PurchaseOrderID);
+
+            if(Purchase == null)
+            {
+                return null;
+            }
+
+            // update
+            Purchase.OrderStatus = Status;
+            await _context.SaveChangesAsync();
+
+            // get purhcase order
+            var NewPurchase = await GetPurchaseOrderByID(PurchaseOrderID, null);
             return NewPurchase;
         }
     }

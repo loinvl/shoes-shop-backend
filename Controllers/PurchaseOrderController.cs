@@ -248,7 +248,7 @@ namespace TheShoesShop_BackEnd.Controllers
                     return BadRequest(new Response
                     {
                         Success = false,
-                        Message = $"Purchase in transit process, can't cancle",
+                        Message = $"Purchase in transit process, can't cancel",
                     });
                 }
 
