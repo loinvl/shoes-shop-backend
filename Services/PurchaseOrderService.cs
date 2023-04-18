@@ -124,11 +124,12 @@ namespace TheShoesShop_BackEnd.Services
             return PurchaseOrder;
         }
 
-        // Get all purchase order
+        // Get all purchase order of customer
         public async Task<IEnumerable<PurchaseOrderDTO>> GetAllPurchaseOrderOfCustomer(int CustomerID)
         {
             var PurchaseOrderList = await (from p in _context.purchaseorder
                                        where p.CustomerID == CustomerID
+                                       orderby p.OrderTime descending
                                        select new PurchaseOrderDTO
                                        {
                                            PurchaseOrderID = p.PurchaseOrderID,
@@ -215,6 +216,57 @@ namespace TheShoesShop_BackEnd.Services
             // get purhcase order
             var NewPurchase = await GetPurchaseOrderByID(PurchaseOrderID, null);
             return NewPurchase;
+        }
+
+        // Get all purchase order  for admin
+        public async Task<IEnumerable<PurchaseOrderDTO>> GetAllPurchaseOrder()
+        {
+            var PurchaseOrderList = await (from p in _context.purchaseorder
+                                           orderby p.OrderTime descending
+                                           select new PurchaseOrderDTO
+                                           {
+                                               PurchaseOrderID = p.PurchaseOrderID,
+                                               Phone = p.Phone,
+                                               Address = p.Address,
+                                               Email = p.Email,
+                                               CustomerName = p.CustomerName,
+                                               OrderStatus = p.OrderStatus,
+                                               Note = p.Note,
+                                               OrderTime = p.OrderTime,
+                                               Customer = null,
+                                               OrderDetail = (from od in _context.orderdetail
+                                                              where od.PurchaseOrderID == p.PurchaseOrderID
+                                                              select new OrderDetailDTO
+                                                              {
+                                                                  PurchaseOrderID = p.PurchaseOrderID,
+                                                                  Quantity = od.Quantity,
+                                                                  UnitPrice = od.UnitPrice,
+                                                                  Shoes = (from s in _context.shoes
+                                                                           where s.ShoesID == od.ShoesID
+                                                                           select new ShoesDTO
+                                                                           {
+                                                                               ShoesID = s.ShoesID,
+                                                                               Color = s.Color,
+                                                                               ShoesStatus = s.ShoesStatus,
+                                                                               Size = s.Size
+                                                                           }).FirstOrDefault(),
+                                                                  ShoesModel = (from s in _context.shoes
+                                                                                where s.ShoesID == od.ShoesID
+                                                                                join sm in _context.shoesmodel on s.ShoesModelID equals sm.ShoesModelID
+                                                                                select new ShoesModelDTO
+                                                                                {
+                                                                                    ShoesModelName = sm.ShoesModelName,
+                                                                                    Images = (from i in _context.shoesmodelimage
+                                                                                              where i.ShoesModelID == sm.ShoesModelID
+                                                                                              select new ShoesModelImageDTO
+                                                                                              {
+                                                                                                  ImageLink = i.ImageLink
+                                                                                              }).ToList(),
+                                                                                }).FirstOrDefault(),
+                                                              }).ToList(),
+                                           }).ToListAsync();
+
+            return PurchaseOrderList;
         }
     }
 }
