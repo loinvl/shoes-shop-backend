@@ -98,7 +98,8 @@ namespace TheShoesShop_BackEnd.Controllers
                     return BadRequest(new Response
                     {
                         Success = false,
-                        Message = "Shoes list is empty, can't checkout"
+                        Message = "Shoes list is empty, can't checkout",
+                        ErrorCode = 1,
                     });
                 }
                 foreach(CheckoutDetail CheckoutDetail in Order.CheckoutDetails)
@@ -108,7 +109,8 @@ namespace TheShoesShop_BackEnd.Controllers
                         return BadRequest( new Response
                         {
                             Success = false,
-                            Message = $"In warehouse, not exist Shoes(id={CheckoutDetail.ShoesID}) or not enough quantity"
+                            Message = $"In warehouse, not exist Shoes(id={CheckoutDetail.ShoesID}) or not enough quantity",
+                            ErrorCode = 2,
                         });
                     }
                 }
@@ -122,7 +124,8 @@ namespace TheShoesShop_BackEnd.Controllers
                     return BadRequest(new Response
                     {
                         Success = false,
-                        Message = "Shoes quantity in warehouse less than you want, please descrease or await"
+                        Message = "Error when checkout, please try again",
+                        ErrorCode = 3,
                     });
                 }
 
@@ -141,7 +144,8 @@ namespace TheShoesShop_BackEnd.Controllers
                 return StatusCode(500, new Response
                 {
                     Success = false,
-                    Message = "Something error, try again"
+                    Message = "Something error, try again",
+                    ErrorCode = 500,
                 });
             }
         }
