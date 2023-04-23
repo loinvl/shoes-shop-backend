@@ -15,15 +15,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add cors to allow acess from another domain
 var TheShoesShopFrontendDomain = builder.Configuration["AnotherDomain:TheShoesShopFrontend"];
+var TheShoesShopFrontendLocalDomain = builder.Configuration["AnotherDomain:TheShoesShopFrontendLocal"];
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins(TheShoesShopFrontendDomain)
+        builder.WithOrigins(TheShoesShopFrontendDomain, TheShoesShopFrontendLocalDomain)
                 .AllowAnyMethod()
                 .AllowAnyHeader();
     });
 });
+
 // Add services to the container.
 var connectionString = builder.Configuration["ConnectionStrings:MySqlConnection"];
 builder.Services.AddDbContext<TheShoesShopDbContext>(options => options.UseMySQL(connectionString));
