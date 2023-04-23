@@ -62,7 +62,7 @@ namespace TheShoesShop_BackEnd.Services
                       });
 
             var ShoesModelFiltList = from sm in ShoesModelListQuery
-                                     where sm.Shoeses.Count() > 0
+                                     where sm.Shoeses!.Count() > 0
                                      //orderby (Sort == 1 || Sort == 2) ? s.UnitPrice : sm.ShoesModelID ascending
                                      select sm;
             //// Sorting, code later
