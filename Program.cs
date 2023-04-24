@@ -33,6 +33,11 @@ builder.Services.AddDbContext<TheShoesShopDbContext>(options => options.UseMySQL
 // Configure Redis connection
 var connectionStringRedis = builder.Configuration["ConnectionStrings:Redis"];
 var redisOptions = ConfigurationOptions.Parse(connectionStringRedis);
+redisOptions.AbortOnConnectFail = false;
+redisOptions.ConnectTimeout = 30000;
+redisOptions.SyncTimeout = 30000;
+redisOptions.AsyncTimeout = 30000;
+redisOptions.AllowAdmin = true;
 var redis = ConnectionMultiplexer.Connect(redisOptions);
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
