@@ -41,7 +41,7 @@ Customer:
 
 ## Product link(maybe will be shutdown whenever cause using free hosting):
  - Frontend: https://the-shoes-shop-2023.vercel.app
- - Backend(swagger ui): https://theshoesshop.somee.com/swagger/index.html
+ - Backend(swagger ui): https://theshoesshop2023.somee.com/swagger/index.html
 
 ## Github links: 
  - Frontend: github.com/DrinkWater30M/theshoesshop-frontend
