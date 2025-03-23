@@ -28,7 +28,8 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 var connectionString = builder.Configuration["ConnectionStrings:MySqlConnection"];
-builder.Services.AddDbContext<TheShoesShopDbContext>(options => options.UseMySQL(connectionString));
+var mysqlServerVersion = new MySqlServerVersion(new Version(8, 0, 35));
+builder.Services.AddDbContext<TheShoesShopDbContext>(options => options.UseMySql(connectionString, mysqlServerVersion));
 
 // Configure Redis connection
 var connectionStringRedis = builder.Configuration["ConnectionStrings:Redis"];
