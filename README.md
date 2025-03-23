@@ -44,5 +44,5 @@ Customer:
  - Backend(swagger ui): https://theshoesshop2023.somee.com/swagger/index.html
 
 ## Github links: 
- - Frontend: github.com/DrinkWater30M/theshoesshop-frontend
- - Backend: gthub.com/DrinkWater30M/TheShoesShop_BackEnd 
+ - Frontend: https://github.com/loinvl/shoes-shop-frontend
+ - Backend: https://github.com/loinvl/shoes-shop-backend
