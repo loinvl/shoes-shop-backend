@@ -179,7 +179,7 @@ namespace TheShoesShop_BackEnd.Controllers
                 var ExpToken = 5;
                 var Token = _JWTService.GenerateToken
                     (new User { CustomerID = Customer.CustomerID, Email = Customer.Email }, ExpToken);
-                var FrontendHost = _config["AnotherDomain:TheShoesShopFrontend"];
+                var FrontendHost = _config["AnotherDomain:TheShoesShopFrontendProd"];
                 var ToEmail = Customer.Email;
                 var Subject = "Reset password";
                 var Content = $"Hi {Customer.CustomerName}!<br/>" +

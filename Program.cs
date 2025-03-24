@@ -14,13 +14,13 @@ using TheShoesShop_BackEnd.Utils;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add cors to allow acess from another domain
-var TheShoesShopFrontendDomain = builder.Configuration["AnotherDomain:TheShoesShopFrontend"];
+var TheShoesShopFrontendProdDomain = builder.Configuration["AnotherDomain:TheShoesShopFrontendProd"];
 var TheShoesShopFrontendLocalDomain = builder.Configuration["AnotherDomain:TheShoesShopFrontendLocal"];
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins(TheShoesShopFrontendDomain, TheShoesShopFrontendLocalDomain)
+        builder.WithOrigins(TheShoesShopFrontendProdDomain, TheShoesShopFrontendLocalDomain)
                 .AllowAnyMethod()
                 .AllowAnyHeader();
     });
