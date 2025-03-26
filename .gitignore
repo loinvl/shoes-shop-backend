@@ -367,3 +367,5 @@ FodyWeavers.xsd
 
 # For environments
 appsettings.json
+appsettings.Production.json
+.env

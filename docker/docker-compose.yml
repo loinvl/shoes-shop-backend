@@ -1,0 +1,53 @@
+networks:
+  shoes_shop:
+    name: shoes_shop
+    driver: bridge
+volumes:
+  mysql_shoes_shop:
+    name: mysql_shoes_shop
+    driver: local
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis_shoes_shop
+    restart: always
+    networks:
+      - shoes_shop
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: redis-server --requirepass $REDIS_PASSWORD
+    ports:
+      - "6380:6379"
+
+  db:
+    image: mysql:8.0.32
+    container_name: mysql_shoes_shop
+    restart: always
+    volumes:
+      - mysql_shoes_shop:/var/lib/mysql
+    networks:
+      - shoes_shop
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "3307:3306"
+
+  app:
+    depends_on:
+        - db
+        - redis
+    build: 
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: app_shoes_shop
+    restart: always
+    networks:
+      - shoes_shop
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
