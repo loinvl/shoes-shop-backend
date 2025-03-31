@@ -39,9 +39,9 @@ Customer:
  - SEO: comming soon.
  - Chat with each orther: comming soon.
 
-## Product link(maybe will be shutdown whenever cause using free hosting):
- - Frontend: https://the-shoes-shop-2023.vercel.app
- - Backend(swagger ui): https://theshoesshop2023.somee.com/swagger/index.html
+## Product:
+ - Website: https://shoesshop.loinv.online
+ - Api document(swagger): https://api.shoesshop.loinv.online/swagger/index.html
 
 ## Github links: 
  - Frontend: https://github.com/loinvl/shoes-shop-frontend
